@@ -36,6 +36,7 @@ async function run() {
         -----------------------*/
 
         const classCollection = client.db('fllsDB').collection('classes');
+        const selectedClassCollection = client.db('fllsDB').collection('selectedClasses');
 
 
         /*--------------------------
@@ -58,6 +59,15 @@ async function run() {
             res.send(result);
         })
 
+        /*--------------------------
+            classes collection apis
+        ----------------------------*/
+
+        app.post('/selectedClasses', async (req, res) => {
+            const selectedClass = req.body;
+            const result = await selectedClassCollection.insertOne(selectedClass);
+            res.send(result);
+        })
 
 
 
