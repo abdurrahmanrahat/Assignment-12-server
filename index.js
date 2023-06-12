@@ -43,7 +43,7 @@ async function run() {
             classes collection apis
         ----------------------------*/
 
-        // get some toys data with email specific
+        // get some data with email specific
         app.get('/classes', async (req, res) => {
             let query = {};
             if (req.query?.email) {
@@ -62,6 +62,15 @@ async function run() {
         /*--------------------------
             classes collection apis
         ----------------------------*/
+        // get some data with email query
+        app.get('/selectedClasses', async (req, res) => {
+            let query = {};
+            if (req.query.email) {
+                query = { userEmail: req.query.email };
+            }
+            const result = await selectedClassCollection.find(query).toArray();
+            res.send(result);
+        })
 
         app.post('/selectedClasses', async (req, res) => {
             const selectedClass = req.body;
