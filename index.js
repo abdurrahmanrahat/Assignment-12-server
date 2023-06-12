@@ -81,7 +81,7 @@ async function run() {
 
         app.delete('/selectedClasses/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await selectedClassCollection.deleteOne(query);
             res.send(result);
         })
@@ -99,7 +99,7 @@ async function run() {
         app.post('/users', async (req, res) => {
             const user = req.body;
 
-            const query = {email: user.email};
+            const query = { email: user.email };
             const existingUser = await userCollection.findOne(query);
             if (existingUser) {
                 return res.send({ message: 'User already exits' });
@@ -109,6 +109,31 @@ async function run() {
             res.send(result);
         })
 
+        // update a user for making admin
+        app.patch('/users/admin/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    role: 'admin'
+                },
+            }
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+
+        // update a user for making Instructor
+        app.patch('/users/instructor/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    role: 'instructor'
+                },
+            }
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
