@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 
 // Middle
 app.use(cors())
-app.use(express())
+app.use(express.json())
 
 
 
@@ -31,6 +31,32 @@ async function run() {
         await client.connect();
 
 
+        /*----------------------
+            All Collection here
+        -----------------------*/
+
+        const classCollection = client.db('fllsDB').collection('classes');
+
+
+        /*--------------------------
+            classes collection apis
+        ----------------------------*/
+
+        // get some toys data with email specific
+        app.get('/classes', async (req, res) => {
+            let query = {};
+            if (req.query?.email) {
+                query = { instructorEmail: req.query.email };
+            }
+            const result = await classCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        app.post('/classes', async (req, res) => {
+            const newClass = req.body;
+            const result = await classCollection.insertOne(newClass);
+            res.send(result);
+        })
 
 
 
