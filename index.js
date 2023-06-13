@@ -38,6 +38,7 @@ async function run() {
         const classCollection = client.db('fllsDB').collection('classes');
         const selectedClassCollection = client.db('fllsDB').collection('selectedClasses');
         const userCollection = client.db('fllsDB').collection('users');
+        const approvedClassCollection = client.db('fllsDB').collection('approvedClasses');
 
 
         /*--------------------------
@@ -54,9 +55,21 @@ async function run() {
             res.send(result);
         })
 
+        // app.get('/classes', async (req, res) => {
+        //     const result = await classCollection.find().toArray();
+        //     res.send(result);
+        // })
+
         app.post('/classes', async (req, res) => {
             const newClass = req.body;
             const result = await classCollection.insertOne(newClass);
+            res.send(result);
+        })
+
+        app.delete('/classes/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = classCollection.deleteOne(query);
             res.send(result);
         })
 
@@ -134,6 +147,26 @@ async function run() {
             const result = await userCollection.updateOne(filter, updateDoc);
             res.send(result);
         })
+
+
+        /*-----------------------------
+            approvedClasses collection apis
+        -------------------------------*/
+        app.get('/approvedClasses', async (req, res) => {
+            let query = {};
+            if (req.query.email) {
+                query = { instructorEmail: req.query.email };
+            }
+            const result = await approvedClassCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        app.post('/approvedClasses', async (req, res) => {
+            const approvedClass = req.body;
+            const result = await approvedClassCollection.insertOne(approvedClass);
+            res.send(result);
+        })
+        
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
