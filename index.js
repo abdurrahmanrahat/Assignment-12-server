@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 
 const app = express();
 
@@ -162,7 +163,7 @@ async function run() {
             const result = await approvedClassCollection.insertOne(approvedClass);
             res.send(result);
         })
-        
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
